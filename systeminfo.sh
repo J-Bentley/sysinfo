@@ -1,14 +1,4 @@
 #!/bin/bash
-# COMP 2101: A Systems report to console & file on system names, os, version, disks, ram, network, software installed & printers. 
-# Works best on a Debian based distro.
-
-#KNOWN BUGS
-# "No LSB Modules" echoed on EVERY instance of startup :( Reason: line 81; gathering distro info aswell as kernel version... worth it.
-# If no printer connected, "lpstat" echoes error. Reason: line 91; lpstat -a to get list and 'cut' to format to new lines.
-# Even though line 16 directs STDERR to file, prints above to console?
-# Outputs STDOUT to file & terminal, file has ugly formatting codes inclded, oops.
-
-# Declare variables
 runindefaultmode="yes"
 
 # Proper usage w/ aliases to be called on error or -h/--help
