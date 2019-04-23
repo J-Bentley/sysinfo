@@ -1,203 +1,95 @@
 #!/bin/bash
-runindefaultmode="yes"
 
-# Proper usage w/ aliases to be called on error or -h/--help
+bold=$(tput bold)
+normal=$(tput sgr0)
+
 function displayusage {
-  echo "Usage: $0 [-h | --help] [-n | --name] [-o | --os] [-i | --ip ] [-v | --version] [-c | --cpu] [-m | --ram] [-d | --disk] [-p | --printer] [-s | --software]"
+  echo "Usage: systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices]"
+}
+function name {
+  uname -a
+}
+function ip {
+  hostname -I
+}
+function os {
+  lsb_release -a
+}
+function cpu {
+  grep -m 1 "cpu MHz" /proc/cpuinfo
+  grep -m 1 "cpu cores" /proc/cpuinfo
+}
+function ram {
+  grep "MemTotal" /proc/meminfo
+  grep "MemFree" /proc/meminfo
+}
+function disks {
+  df -H
 }
 
-function errormessage {
-  echo "$@" 2>> systeminfo_error.txt
+#These 2 do not show on default mode without calling them in arguments
+function devices {
+  lshw -short && lsusb | more
+}
+function software {
+  dpkg --get-selection | more
 }
 
-### Checks via iteration for arguments called, sets infowanted variable to yes, if so.
 while [ $# -gt 0 ]; do
   case "$1" in
     -h|--help)
       displayusage
       exit 0
       ;;
-    -s|--software)
-      softwareinfowanted="yes"
-      runindefaultmode="no"
-      ;;
-    -p|--printer)
-      printerinfowanted="yes"
-      runindefaultmode="no"
-      ;;
-    -d|--disk)
-      diskinfowanted="yes"
-      runindefaultmode="no"
-      ;;
-    -m|--ram)
-      raminfowanted="yes"
-      runindefaultmode="no"
-      ;;
-    -c|--cpu)
-      cpuinfowanted="yes"
-      runindefaultmode="no"
-      ;;
-    -v|--version)
-      versioninfowanted="yes"
-      runindefaultmode="no"
+    -n|--name)
+      echo -e "${bold}HOSTNAME${normal}"
+      name
+      exit 0
       ;;
     -i|--ip)
-      ipinfowanted="yes"
-      runindefaultmode="no"
-      ;;
-    -n|--name)
-      namesinfowanted="yes"
-      runindefaultmode="no"
+      echo -e "${bold}IP${normal}"
+      ip
+      exit 0
       ;;
     -o|--os)
-      osinfowanted="yes"
-      runindefaultmode="no"
+      echo -e "${bold}OS${normal}"
+      os
+      exit 0
+      ;;
+    -c|--cpu)
+      echo -e "${bold}CPU${normal}"
+      cpu
+      exit 0
+      ;;
+    -m|--ram)
+      echo -e "${bold}RAM${normal}"
+      ram
+      exit 0
+      ;;
+    -d|--disks)
+      echo -e "${bold}DISKS${normal}"
+      disks
+      exit 0
+      ;;
+    -de|--devices)
+      echo -e "${bold}DEVICES${normal}"
+      devices
+      exit 0
       ;;
     *)
-      errormessage "Invalid argument: "$1
-      errormessage "$(displayusage)"
+      echo "Incorrect Usage!"
+      echo $displayusage
       exit 1
       ;;
   esac
   shift
 done
 
-### Gather the RAW data requested by the args, save to info variable.
-# OS, system & domain data
-osinfo="$(grep PRETTY /etc/os-release |sed -e 's/.*=//' -e 's/"//g')"
-systemname="$(hostname)"
-domainname="$(domainname)"
+echo -e "${bold}SYSINFO by Arcaniist ${normal}[-h for usage, some info omiited]\n"
 
-# Networking data
-ipinfo="$(hostname -I)"
-dginfo="$(hostname -i)" 
-
-# Version data
-versioninfo="$(uname -a)"
-distroinfo="$(lsb_release -a)" 
-
-# CPU data (-m 1 greps for first instance of occurance)
-cpuinfo="$(grep -m 1 "model name" /proc/cpuinfo)"
-cpuinfo_mhz="$(grep -m 1 "cpu MHz" /proc/cpuinfo)"
-cpuinfo_cores="$(grep -m 1 "cpu cores" /proc/cpuinfo)"
-
-# RAM data
-raminfo_total="$(grep "MemTotal" /proc/meminfo)"
-raminfo_free="$(grep "MemFree" /proc/meminfo)"
-
-# Disk data
-diskinfo="$(df -h)"
-
-# Printer data
-printerinfo="$(lpstat -a | cut -f1 -d ' ')"
-
-# Software data
-softwareinfo="$(dpkg --get-selections)"
-
-### Put RAW data in formatted text to make it pretty & save to formatted variable.
-
-osinfoformatted="
-\033[1mOperating System Information\033[0m
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-$osinfo
-"
-
-nameinfoformatted="
-\033[1mSystem Names\033[0m
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Hostname: $systemname
-Domainname: $domainname
-"
-
-ipinfoformatted="
-\033[1mNetwork\033[0m
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-IP Address: $ipinfo
-Default Gateway: $dginfo
-"
-
-versioninfoformatted="
-\033[1mVersions\033[0m
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Kernel Version: $versioninfo
-$distroinfo
-"
-
-cpuinfoformatted="
-\033[1mProcessor\033[0m
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-$cpuinfo
-$cpuinfo_mhz
-$cpuinfo_cores
-"^
-
-raminfoformatted="
-\033[1mRAM\033[0m
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-$raminfo_total
-$raminfo_free
-"
-
-diskinfoformatted="
-\033[1mDisks\033[0m
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-$diskinfo
-"
-
-printerinfoformatted="
-\033[1mPrinters\033[0m
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-$printerinfo
-"
-softwareinfoformatted="
-\033[1mSoftware\033[0m (verbose)
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-$softwareinfo
-"
-
-### Checks infowanted variable up top for "yes" and prints the respective pretty variable, if so.
-# Uses formatting codes (\033[1m) to bold the titles
-# STDOUT is piped to to tee -a, appending to file & terminal. File located in script dir as Systeminfo_out.
-# echo -e allows the formatting codes.
-
-echo -e "\033[1mBash System Report\033[0m - Jordan Bentley"
-
-if [ "$runindefaultmode" = "yes" -o "$namesinfowanted" = "yes" ]; then
-  echo -e "$nameinfoformatted" | tee -a systeminfo_out.txt 
-fi
-
-if [ "$runindefaultmode" = "yes" -o  "$osinfowanted" = "yes" ]; then
-  echo -e "$osinfoformatted" | tee -a systeminfo_out.txt 
-fi
-
-if [ "$runindefaultmode" = "yes" -o "$ipinfowanted" = "yes" ]; then
-  echo -e "$ipinfoformatted" | tee -a systeminfo_out.txt 
-fi
-
-if [ "$runindefaultmode" = "yes" -o "$versioninfowanted" = "yes" ]; then
-  echo -e "$versioninfoformatted" | tee -a systeminfo_out.txt 
-fi
-
-if [ "$runindefaultmode" = "yes" -o "$cpuinfowanted" = "yes" ]; then
-  echo -e "$cpuinfoformatted" | tee -a systeminfo_out.txt 
-fi
-
-if [ "$runindefaultmode" = "yes" -o "$raminfowanted" = "yes" ]; then
-  echo -e "$raminfoformatted" | tee -a systeminfo_out.txt 
-fi
-
-if [ "$runindefaultmode" = "yes" -o "$diskinfowanted" = "yes" ]; then
-  echo -e "$diskinfoformatted" | tee -a systeminfo_out.txt 
-fi
-
-if [ "$runindefaultmode" = "yes" -o "$printerinfowanted" = "yes" ]; then
-  echo -e "$printerinfoformatted" | tee -a systeminfo_out.txt 
-fi
-
-if [ "$runindefaultmode" = "yes" -o "$softwareinfowanted" = "yes" ]; then
-  echo -e "$softwareinfoformatted" | tee -a systeminfo_out.txt | more 
-fi
-
-# Remove STDOUT & STDERR text files.
-#rm systeminfo_out
-#rm systeminfo_error
+name\n
+ip\n
+os\n
+cpu\n
+ram\n
+disks\n
