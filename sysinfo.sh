@@ -3,8 +3,8 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 function displayusage {
-  echo -e "${bold}SYSINFO by Arcaniist ${normal}\n-----------------------------------------------------\n"
-  echo "Usage: systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]"
+  echo -e "${bold}SYSINFO by Arcaniist ${normal}\n"
+  echo "USAGE: systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]"
 }
 function name {
   hostname -f
@@ -28,7 +28,7 @@ function disks {
   df -H
 }
 function devices {
-  lshw -short && lsusb | more
+  lshw -short && lsusb
 }
 
 #Omitted, must be called via arg
@@ -91,7 +91,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-echo -e "${bold}SYSINFO by Arcaniist ${normal}[-h for usage, some info omitted]\n-----------------------------------------------------\n"
+echo -e "${bold}SYSINFO by Arcaniist ${normal}[-h for usage, some info omitted]\n"
 
 name
 ip
