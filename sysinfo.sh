@@ -3,6 +3,7 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 function displayusage {
+  echo -e "${bold}SYSINFO by Arcaniist ${normal}\n-----------------------------------------------------\n"
   echo "Usage: systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]"
 }
 function name {
