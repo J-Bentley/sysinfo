@@ -10,6 +10,7 @@ Lists info on ...
 * devices
 * software
 
+[Screenshot](https://i.imgur.com/ZjLpSMU.png)
 ## Usage
 ```bash systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]``` 
 
@@ -29,4 +30,4 @@ Lists info on ...
 
 ## TODO
 * SMS/email upon success/error via twilio
-* Arg output include hostname for Ansible support
+* more Ansible support
