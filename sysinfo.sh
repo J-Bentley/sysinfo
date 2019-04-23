@@ -15,7 +15,6 @@ function ip {
 }
 function os {
   lsb_release -d
-  lsb_release -c
 }
 function cpu {
   grep -m 1 "cpu MHz" /proc/cpuinfo
@@ -28,11 +27,11 @@ function ram {
 function disks {
   df -H
 }
-
-#These 2 do not show on default mode without calling them in arguments
 function devices {
   lshw -short && lsusb | more
 }
+
+#Omitted, must be called via arg
 function software {
   dpkg --get-selections | more
 }
@@ -102,3 +101,5 @@ cpu
 ram
 echo -e "\n"
 disks
+echo -e "\n"
+devices
