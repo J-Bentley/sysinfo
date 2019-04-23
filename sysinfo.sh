@@ -3,11 +3,11 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 function displayusage {
-  echo -e "${bold}SYSINFO by Arcaniist ${normal}\n"
+  echo -e "${bold}SYSINFO run by $(whoami) ${normal}\n"
   echo "USAGE: systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]"
 }
 function name {
-  hostname -f 
+  hostname -f
   uptime
 }
 function ip {
@@ -28,14 +28,21 @@ function ram {
 function disks {
   df -H
 }
+function processes {
+  pstree
+}
+
+### Omitted in no arg mode, must be called via arg
+function software {
+  dpkg --get-selections | more
+}
 function devices {
   lshw -short && lsusb
 }
 
-#Omitted, must be called via arg
-function software {
-  dpkg --get-selections | more
-}
+if [ $# -gt 1 ]; then
+  echo "Ignoring that extra arg..."
+fi
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -73,18 +80,25 @@ while [ $# -gt 0 ]; do
       disks
       exit 0
       ;;
-    -de|--devices)
-      echo -e "${bold}DEVICES${normal}"
-      devices
+    -p|--processes)
+      echo -e "${bold}PROCESSES${normal}"
+      processes
       exit 0
       ;;
+      ### Omitted in no arg mode, must be called via arg
      -s|--software)
       echo -e "${bold}SOFTWARE${normal}"
       software
       exit 0
       ;;
+    -de|--devices)
+      echo -e "${bold}DEVICES${normal}"
+      devices
+      exit 0
+      ;;
+
     *)
-      echo "Incorrect Usage!"
+      echo "${bold}[X]${normal} Invalid argument"
       echo $displayusage
       exit 1
       ;;
@@ -92,7 +106,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-echo -e "${bold}SYSINFO by Arcaniist ${normal}[-h for usage, some info omitted]\n"
+echo -e "${bold}SYSINFO run by $(whoami) ${normal}[-h for usage, some info omitted]\n"
 
 name
 ip
@@ -103,4 +117,4 @@ ram
 echo -e "\n"
 disks
 echo -e "\n"
-devices
+processes
