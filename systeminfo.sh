@@ -1,19 +1,20 @@
 #!/bin/bash
-
 bold=$(tput bold)
 normal=$(tput sgr0)
 
 function displayusage {
-  echo "Usage: systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices]"
+  echo "Usage: systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]"
 }
 function name {
-  uname -a
+  hostname -f
 }
 function ip {
   hostname -I
+  netstat -r | grep default
 }
 function os {
-  lsb_release -a
+  lsb_release -d
+  lsb_release -c
 }
 function cpu {
   grep -m 1 "cpu MHz" /proc/cpuinfo
@@ -32,7 +33,7 @@ function devices {
   lshw -short && lsusb | more
 }
 function software {
-  dpkg --get-selection | more
+  dpkg --get-selections | more
 }
 
 while [ $# -gt 0 ]; do
@@ -76,6 +77,11 @@ while [ $# -gt 0 ]; do
       devices
       exit 0
       ;;
+     -s|--software)
+      echo -e "${bold}SOFTWARE${normal}"
+      software
+      exit 0
+      ;;
     *)
       echo "Incorrect Usage!"
       echo $displayusage
@@ -85,11 +91,13 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-echo -e "${bold}SYSINFO by Arcaniist ${normal}[-h for usage, some info omiited]\n"
+echo -e "${bold}SYSINFO by Arcaniist ${normal}[-h for usage, some info omitted]\n-----------------------------------------------------\n"
 
-name\n
-ip\n
-os\n
-cpu\n
-ram\n
-disks\n
+name
+ip
+os
+echo -e "\n"
+cpu
+ram
+echo -e "\n"
+disks
