@@ -7,7 +7,8 @@ function displayusage {
   echo "USAGE: systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]"
 }
 function name {
-  hostname -f
+  hostname -f 
+  uptime
 }
 function ip {
   hostname -I
