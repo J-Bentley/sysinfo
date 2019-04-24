@@ -1,6 +1,6 @@
 # SYSINFO
-A system report script written in bash for Ubuntu 16.04 with clean stdout/error and multiple instances in mind to quickly summarize important system info & metrics.
-Lists info on ...
+Summarizes Ubuntu 16.04 system metrics via bash and default commands with formatted stdout & error with Ansible/multiple instances in mind.     
+*Lists info on ...*
 * hostname
 * ip
 * os
@@ -15,7 +15,7 @@ Lists info on ...
 ```bash systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]``` 
 
 ## Setup
-* Requires Ubuntu 16.04 & default prerequesties (nothing should require installation if using 16.04)
+* Requires Ubuntu 16.04 and these bundled commands
 	* tput
 	* hostname
 	* netstat
@@ -30,4 +30,5 @@ Lists info on ...
 
 ## TODO
 * SMS/email upon success/error via twilio
-* more Ansible support
+* better error handling
+* formatt error ouput
