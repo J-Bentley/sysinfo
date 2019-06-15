@@ -27,7 +27,7 @@ Summarizes Ubuntu 16.04 system metrics via shell script or Windows via powershel
 	* dpkg
 
 ## Caveats
-* Only 1 argument can be called at a time
+* Only 1 argument can be called at a time unless in no arg mode
 
 ## TODO
 * SMS/email upon success/error via twilio
