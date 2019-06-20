@@ -15,21 +15,6 @@ Summarizes Ubuntu 16.04 system metrics via shell script or Windows via powershel
 ## Usage
 ```bash systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]``` 
 
-## Setup
-* Requires Ubuntu 16.04 and these bundled commands
-	* tput
-	* hostname
-	* netstat
-	* lsb_release
-	* df
-	* lshw
-	* lsusb
-	* dpkg
-
 ## Caveats
 * Only 1 argument can be called at a time unless in no arg mode
 
-## TODO
-* SMS/email upon success/error via twilio
-* better error handling
-* formatt error ouput
