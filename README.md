@@ -1,7 +1,6 @@
 # SYSINFO
-Summarizes Ubuntu 16.04 system metrics via shell script or Windows via powershell script using default commands with formatted stdout & error.     
+Summarizes Ubuntu system metrics via shell script or Windows via powershell script using default commands with formatted stdout & error.     
 
-*Lists info on ...*
 * hostname
 * ip
 * os
