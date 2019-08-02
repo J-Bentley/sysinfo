@@ -11,7 +11,8 @@ Summarizes Ubuntu 16.04 system metrics via shell script or Windows via powershel
 * devices
 * software
 
-[Screenshot](https://i.imgur.com/ZjLpSMU.png)
+[Screenshot (Ubuntu)](https://i.imgur.com/ZjLpSMU.png)
+[Screenshot (ubuntu)](https://i.imgur.com/7fqrEvw.png)
 ## Usage
 ```bash systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]``` 
 
