@@ -18,5 +18,5 @@ Summarizes Ubuntu system metrics via shell script or Windows via powershell scri
 ```bash systeminfo.sh [-h|help, -n|name, -i|ip, -o|os, -c|cpu, -m|ram, -d|disks, -de|devices, -s|software]``` 
 
 ## Caveats
-* Only 1 argument can be called at a time unless in no arg mode
+* Only 1 argument can be called at a time unless in no arg mode when all aregs but software and devices are called.
 
